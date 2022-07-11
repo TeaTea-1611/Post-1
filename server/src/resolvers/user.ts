@@ -15,7 +15,7 @@ export class UserResolver {
     @Arg("registerInput") registerInput: RegisterInput,
     @Ctx() { req }: Context
   ): Promise<UserMutationResponse> {
-    const validateErrors = await validateRegisterInput(registerInput);
+    const validateErrors = validateRegisterInput(registerInput);
     if (validateErrors != null) {
       return {
         code: 400,
@@ -111,7 +111,6 @@ export class UserResolver {
       }
 
       req.session.uid = user.id;
-      console.log(req.session);
 
       return {
         code: 200,
