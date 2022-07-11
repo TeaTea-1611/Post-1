@@ -11,7 +11,7 @@ import {
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
-  @Field((_type) => ID)
+  @Field(() => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 

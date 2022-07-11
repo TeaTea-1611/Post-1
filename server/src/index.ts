@@ -14,6 +14,7 @@ import MongoStore from "connect-mongo";
 import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { Context } from "./types/Context";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
   await createConnection({
@@ -37,7 +38,7 @@ const main = async () => {
       name: COOKIE_NAME,
       store: MongoStore.create({ mongoUrl }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        maxAge: 1000 * 60, // 1 day
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__,
@@ -50,7 +51,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver],
+      resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
     context: ({ req, res }): Context => ({ req, res }),
