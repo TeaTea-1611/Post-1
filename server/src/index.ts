@@ -9,6 +9,11 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { UserResolver } from "./resolvers/user";
+import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
+import session from "express-session";
+import { COOKIE_NAME, __prod__ } from "./constants";
+import { Context } from "./types/Context";
 
 const main = async () => {
   await createConnection({
@@ -23,11 +28,32 @@ const main = async () => {
 
   const app = express();
 
+  const mongoUrl = `mongodb+srv://imtra68:truclinh1611@ochacoder.pcwtl.mongodb.net/ochacoder?retryWrites=true&w=majority`;
+  await mongoose.connect(mongoUrl);
+  console.log("Connected to MongoDB");
+
+  app.use(
+    session({
+      name: COOKIE_NAME,
+      store: MongoStore.create({ mongoUrl }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        httpOnly: true,
+        sameSite: "lax",
+        secure: __prod__,
+      },
+      secret: process.env.COOKIE_SECRET as string,
+      saveUninitialized: false,
+      resave: false,
+    })
+  );
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver],
       validate: false,
     }),
+    context: ({ req, res }): Context => ({ req, res }),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground],
   });
 
