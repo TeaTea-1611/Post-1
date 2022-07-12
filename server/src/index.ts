@@ -15,7 +15,7 @@ import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { Context } from "./types/Context";
 import { PostResolver } from "./resolvers/post";
-
+import cors from "cors";
 const main = async () => {
   await createConnection({
     type: "postgres",
@@ -28,6 +28,8 @@ const main = async () => {
   });
 
   const app = express();
+
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
   const mongoUrl = `mongodb+srv://imtra68:truclinh1611@ochacoder.pcwtl.mongodb.net/ochacoder?retryWrites=true&w=majority`;
   await mongoose.connect(mongoUrl);

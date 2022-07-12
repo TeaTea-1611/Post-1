@@ -1,0 +1,69 @@
+@import "react-toastify/dist/ReactToastify.css";
+
+:root {
+  --primary: #f72585;
+  --white: #fefefe;
+  --background: #ffffff;
+  --active: #b5179e;
+  --sidebar-color-1: #be20a7;
+  --sidebar-color-2: #7e2370;
+  --error-color: #ef233c;
+
+  --theme-dark-background: #161b22;
+  --theme-dark-background_2: #010409;
+  --theme-dark-background_3: #1e2531;
+  --theme-dark-background_4: #0d1117;
+  --theme-dark-background_5: #212529;
+  --theme-dark-border: #21262d;
+  --theme-dark-hover: rgba(255, 255, 255, 0.05);
+  --theme-dark-text: #c9d1d9;
+  --theme-dark-text_2: #565d65;
+
+  --theme-light-background: #ffffff;
+  --theme-light-text: #161b22;
+  --theme-light-border: #f72585;
+  --theme-light-hover: rgba(0, 0, 0, 0.05);
+
+  --ochacoder-color_1: #f72585;
+  --ochacoder-color_2: #c43aaf;
+  --ochacoder-color_3: #8520c9;
+  --ochacoder-color_4: #58367c;
+  --ochacoder-color_5: #6f3fbd;
+  --ochacoder-color_6: #20e3b2;
+  --ochacoder-color_7: #d66efd;
+  --ochacoder-color_8: #ff2ced;
+  --ochacoder-color_9: #2cccff;
+  --ochacoder-color_10: #2cccff;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 1.6rem;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}

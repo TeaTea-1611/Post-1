@@ -1,0 +1,121 @@
+.button {
+  font-family: "SFMono", sans-serif;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+  max-width: 100%;
+  color: inherit;
+  font-size: 1.6rem;
+  background-color: var(--theme-light-background);
+  line-height: 1.1;
+  cursor: pointer;
+
+  + .button {
+    margin-left: 8px;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: none;
+    user-select: none;
+  }
+
+  &.outline {
+    border: 1px solid var(--theme-dark-border);
+
+    &:hover {
+      background-image: linear-gradient(
+        to right top,
+        var(--primary),
+        var(--active)
+      );
+      color: var(--white);
+      border-color: var(--active);
+    }
+  }
+
+  &.primary {
+    background-image: linear-gradient(
+      to right top,
+      var(--active),
+      var(--primary)
+    );
+    color: var(--theme-dark-text);
+    border: none;
+
+    &:hover {
+      color: var(--white);
+      background-image: linear-gradient(
+        to right top,
+        var(--primary),
+        var(--active)
+      );
+    }
+  }
+
+  &.dark {
+    color: var(--theme-dark-text);
+    background-color: var(--theme-dark-background);
+
+    &.outline {
+      background-color: var(--theme-dark-background_2);
+
+      &:hover {
+        border-color: var(--theme-dark-border);
+      }
+    }
+  }
+}
+
+//icon
+.btn-icon + .btn-content,
+.btn-content + .btn-icon {
+  margin-left: 8px;
+}
+
+.btn-icon {
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+}
+
+.text {
+  background-color: transparent;
+  box-shadow: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.rounded {
+  border-radius: 999px;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0 0 0 / 6%);
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(22, 24, 35, 0.025);
+  }
+}
+
+//Button sizes
+.small {
+  min-width: 88px;
+  font-size: 1.2rem;
+  padding: 4px 8px;
+}
+.medium {
+  min-width: 108px;
+  font-size: 1.4rem;
+  padding: 6px 12px;
+}
+.large {
+  min-width: 128px;
+  font-size: 1.6rem;
+  padding: 8px 16px;
+}
