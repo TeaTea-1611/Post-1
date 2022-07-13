@@ -1,0 +1,40 @@
+.header {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  box-shadow: 0 1px 1px 0 rgba(0 0 0 / 12%);
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.inner {
+  width: 1280px;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.header-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .link-item {
+    + .link-item {
+      margin-left: 12px;
+    }
+
+    &:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+  }
+}

@@ -2,26 +2,13 @@
   position: relative;
   border-radius: 4px;
   background-color: transparent;
-  width: 208px;
+  width: 100%;
   height: 36px;
   margin-top: 16px;
 
   &.label {
     .form-control {
       border: 2px solid var(--primary);
-    }
-  }
-
-  &.dark {
-    .icon-eye,
-    .icon-date,
-    .icon-clear,
-    .form-control {
-      color: var(--theme-dark-text);
-    }
-
-    .label-title {
-      background-color: var(--theme-dark-background);
     }
   }
 }

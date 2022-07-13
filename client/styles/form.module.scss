@@ -1,4 +1,6 @@
-.register {
+.login,
+.register,
+.forgot-password {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -9,9 +11,23 @@
     padding: 20px;
     box-shadow: 0 0 10px rgba(0 0 0 / 32%);
     border-radius: 4px;
+    width: 348px;
+
+    &.loading {
+      box-shadow: none;
+    }
 
     h1 {
       margin-bottom: 24px;
+      color: var(--primary);
+    }
+
+    a {
+      text-decoration: underline;
+
+      &:hover {
+        color: var(--primary);
+      }
     }
 
     .submit {

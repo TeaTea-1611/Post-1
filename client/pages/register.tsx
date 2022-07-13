@@ -1,18 +1,24 @@
 import { Form, Formik, FormikHelpers } from "formik";
 import { InputLabel } from "../components/Input";
 import classNames from "classnames/bind";
-import styles from "../styles/register.module.scss";
+import styles from "../styles/form.module.scss";
 import { Button } from "../components/Button";
-import { RegisterInput, useRegisterMutation } from "../generated/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  RegisterInput,
+  useRegisterMutation,
+} from "../generated/graphql";
 import { mapFieldError } from "../helpers/mapFieldError";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const cx = classNames.bind(styles);
 
 const Register = () => {
   const router = useRouter();
-  const [registerUser, { data, error }] = useRegisterMutation();
+  const [registerUser] = useRegisterMutation();
 
   const handleSubmit = async (
     values: RegisterInput,
@@ -21,6 +27,16 @@ const Register = () => {
     const res = await registerUser({
       variables: {
         registerInput: values,
+      },
+      update: (cache, { data }) => {
+        if (data?.register?.success) {
+          cache.writeQuery<MeQuery>({
+            query: MeDocument,
+            data: {
+              me: data.register.user,
+            },
+          });
+        }
       },
     });
     if (res.data?.register?.errors) {
@@ -36,18 +52,22 @@ const Register = () => {
       initialValues={{ username: "", password: "", email: "" }}
       onSubmit={handleSubmit}
     >
-      {({}) => (
+      {() => (
         <div className={cx("register")}>
           <Form className={cx("form")}>
             <h1>Register</h1>
             <InputLabel name="username" label="Username" type="text" />
             <InputLabel name="email" label="Email" type="text" />
             <InputLabel name="password" label="Password" isPassword />
-            <Button type="submit" className={cx("submit")} outline>
+            <Button type="submit" className={cx("submit")}>
               Register
             </Button>
-            {error && <p className={cx("error")}>Fail</p>}
-            {data && <p className={cx("error")}>Success</p>}
+            <div className={cx("change-form")}>
+              <p>
+                {`Don't have an account? `}
+                <Link href="/login">Login</Link>
+              </p>
+            </div>
           </Form>
         </div>
       )}
