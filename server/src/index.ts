@@ -32,7 +32,7 @@ const main = async () => {
 
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
-  const mongoUrl = `mongodb+srv://imtra68:truclinh1611@ochacoder.pcwtl.mongodb.net/ochacoder?retryWrites=true&w=majority`;
+  const mongoUrl = `mongodb+srv://imtra68:truclinh1611@reddit.pcwtl.mongodb.net/?retryWrites=true&w=majority`;
   await mongoose.connect(mongoUrl);
   console.log("Connected to MongoDB");
 

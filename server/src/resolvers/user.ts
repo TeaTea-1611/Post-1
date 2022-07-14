@@ -163,18 +163,23 @@ export class UserResolver {
     const user = await User.findOne({ email });
     if (!user) return true;
 
-    await TokensModel.findByIdAndDelete({ uid: `${user.id}` });
+    await TokensModel.findOneAndDelete({ uid: `${user.id}` });
 
     const resetToken = uuidv4();
 
     const hashedToken = await argon2.hash(resetToken);
 
-    await new TokensModel({ uid: `${user.id}`, token: hashedToken }).save();
+    const newTokenModel = await TokensModel.create({
+      uid: `${user.id}`,
+      token: hashedToken,
+    });
+    await newTokenModel.save();
 
     await sendEmail(
       user.email,
       `<a href="http://localhost:3000/reset-password?token=${resetToken}&uid=${user.id}">Click here to reset Password</a>`
     );
+
     return true;
   }
 
@@ -182,7 +187,8 @@ export class UserResolver {
   async resetPassword(
     @Arg("token") token: string,
     @Arg("uid") uid: string,
-    @Arg("resetPasswordInput") { newPassword }: ResetPasswordInput
+    @Arg("resetPasswordInput") { newPassword }: ResetPasswordInput,
+    @Ctx() { req }: Context
   ): Promise<UserMutationResponse> {
     if (newPassword.length < 6) {
       return {
@@ -240,8 +246,11 @@ export class UserResolver {
         };
       const hashedPassword = await argon2.hash(newPassword);
       user.password = hashedPassword;
+
       await user.save();
       await checkToken.deleteOne();
+      req.session.uid = user.id;
+
       return {
         code: 200,
         success: true,

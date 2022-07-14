@@ -10,7 +10,7 @@ export class Tokens {
   @prop({ required: true })
   token!: string;
 
-  @prop({ default: Date.now(), expires: 60 * 5 })
+  @prop({ default: Date.now, expires: 60 * 30 }) // 30 minutes
   createdAt: Date;
 }
 

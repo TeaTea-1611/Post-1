@@ -7,11 +7,16 @@ import {
   ForgotPasswordInput,
   useForgotPasswordMutation,
 } from "../generated/graphql";
+import { useCheckAuth } from "../utils/useCheckAuth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faYinYang } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles);
 
-const ResetPassword = () => {
+const ForgotPassword = () => {
   const [forgotPassword] = useForgotPasswordMutation();
+
+  const { data: authData, loading: authLoading } = useCheckAuth();
 
   const handleSubmit = async (values: ForgotPasswordInput) => {
     await forgotPassword({
@@ -24,12 +29,26 @@ const ResetPassword = () => {
     <Formik initialValues={{ email: "" }} onSubmit={handleSubmit}>
       {() => (
         <div className={cx("forgot-password")}>
-          <Form className={cx("form")}>
-            <h1>Forgot Password</h1>
-            <InputLabel name="email" label="Email" />
-            <Button type="submit" className={cx("submit")}>
-              Confirm
-            </Button>
+          <Form
+            className={cx("form", {
+              loading: authLoading || (!authLoading && authData?.me),
+            })}
+          >
+            {authLoading || (!authLoading && authData?.me) ? (
+              <FontAwesomeIcon
+                icon={faYinYang}
+                spin
+                style={{ fontSize: "100px" }}
+              />
+            ) : (
+              <>
+                <h1>Forgot Password</h1>
+                <InputLabel name="email" label="Email" />
+                <Button type="submit" className={cx("submit")}>
+                  Confirm
+                </Button>
+              </>
+            )}
           </Form>
         </div>
       )}
@@ -37,4 +56,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ForgotPassword;

@@ -1,65 +1,65 @@
 import { Form, Formik, FormikHelpers } from "formik";
+import { Button } from "../components/Button";
 import { InputLabel } from "../components/Input";
 import classNames from "classnames/bind";
 import styles from "../styles/form.module.scss";
-import { Button } from "../components/Button";
 import {
-  LoginInput,
   MeDocument,
   MeQuery,
-  useLoginMutation,
+  ResetPasswordInput,
+  useResetPasswordMutation,
 } from "../generated/graphql";
-import { mapFieldError } from "../helpers/mapFieldError";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import Link from "next/link";
-import { useCheckAuth } from "../utils/useCheckAuth";
+import { mapFieldError } from "../helpers/mapFieldError";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faYinYang } from "@fortawesome/free-solid-svg-icons";
+import { useCheckAuth } from "../utils/useCheckAuth";
 
 const cx = classNames.bind(styles);
 
-const Login = () => {
+const ResetPassword = () => {
   const router = useRouter();
-
+  const [resetPassword] = useResetPasswordMutation();
   const { data: authData, loading: authLoading } = useCheckAuth();
 
-  const [loginUser] = useLoginMutation();
-
   const handleSubmit = async (
-    values: LoginInput,
-    { setErrors }: FormikHelpers<LoginInput>
+    values: ResetPasswordInput,
+    { setErrors }: FormikHelpers<ResetPasswordInput>
   ) => {
-    const res = await loginUser({
+    const res = await resetPassword({
       variables: {
-        loginInput: values,
+        uid: router.query.uid as string,
+        token: router.query.token as string,
+        resetPasswordInput: values,
       },
       update: (cache, { data }) => {
-        if (data?.login?.success) {
+        if (data?.resetPassword?.success) {
           cache.writeQuery<MeQuery>({
             query: MeDocument,
             data: {
-              me: data.login.user,
+              me: data.resetPassword.user,
             },
           });
         }
       },
     });
-    if (res.data?.login?.errors) {
-      setErrors(mapFieldError(res.data.login.errors));
-    } else if (res.data?.login?.user) {
-      toast(`Welcome ${res.data.login.user.username}!`);
+    if (res.data?.resetPassword?.errors) {
+      const fieldErrors = mapFieldError(res.data.resetPassword.errors);
+      if ("token" in fieldErrors) {
+        toast.error(fieldErrors.token);
+      }
+      setErrors(fieldErrors);
+    }
+    if (res.data?.resetPassword?.user) {
+      toast(res.data.resetPassword.message);
       router.push("/");
     }
   };
-
   return (
-    <Formik
-      initialValues={{ usernameOrEmail: "", password: "" }}
-      onSubmit={handleSubmit}
-    >
+    <Formik initialValues={{ newPassword: "" }} onSubmit={handleSubmit}>
       {() => (
-        <div className={cx("login")}>
+        <div className={cx("reset-password")}>
           <Form
             className={cx("form", {
               loading: authLoading || (!authLoading && authData?.me),
@@ -73,27 +73,15 @@ const Login = () => {
               />
             ) : (
               <>
-                <h1>Login</h1>
+                <h1>Reset Password</h1>
                 <InputLabel
-                  name="usernameOrEmail"
-                  label="Username Or Email"
-                  type="text"
+                  name="newPassword"
+                  label="New Password"
+                  isPassword
                 />
-                <InputLabel name="password" label="Password" isPassword />
                 <Button type="submit" className={cx("submit")}>
-                  Login
+                  Confirm
                 </Button>
-                <div className={cx("change-form")}>
-                  <p>
-                    {`Don't have an account? `}
-                    <Link href="/register">Register</Link>
-                  </p>
-                </div>
-                <div className={cx("change-form")}>
-                  <p>
-                    <Link href="/forgot-password">Forgot password</Link>
-                  </p>
-                </div>
               </>
             )}
           </Form>
@@ -103,4 +91,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;

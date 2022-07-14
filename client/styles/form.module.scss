@@ -1,6 +1,7 @@
 .login,
 .register,
-.forgot-password {
+.forgot-password,
+.reset-password {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -15,6 +16,9 @@
 
     &.loading {
       box-shadow: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     h1 {

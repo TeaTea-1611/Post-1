@@ -4,26 +4,69 @@ import styles from "../styles/Home.module.scss";
 import Header from "../components/Layout/Header";
 import { addApolloState, initializeApollo } from "../lib/apolloClient";
 import { PostsDocument, usePostsQuery } from "../generated/graphql";
-import Loading from "../components/Loading";
+import { Button } from "../components/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { NetworkStatus } from "@apollo/client";
 
 const cx = classNames.bind(styles);
 
 const Home: NextPage = () => {
-  const { data, loading } = usePostsQuery();
+  const { data, loading, fetchMore, networkStatus } = usePostsQuery({
+    variables: { limit: 3 },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const loadingMore = networkStatus === NetworkStatus.fetchMore;
+
+  const loadMorePosts = () => {
+    fetchMore({
+      variables: { cursor: data?.posts?.cursor },
+    });
+  };
+
   return (
     <>
       <Header />
       <div className={cx("home")}>
-        {loading ? (
-          <Loading large />
-        ) : (
-          data?.posts?.map((post) => (
-            <div key={post.id}>
-              <h1>{post.title}</h1>
-              <p>{post.text}</p>
-            </div>
-          ))
-        )}
+        <div className={cx("inner")}>
+          {loading && !loadingMore ? (
+            <p>Loading...</p>
+          ) : (
+            data?.posts?.paginatedPosts?.map((post) => (
+              <div key={post.id} className={cx("post")}>
+                <div className={cx("header")}>
+                  <h2>{post.title}</h2>
+                  <span>{post.user.username}</span>
+                </div>
+                <div className={cx("body")}>
+                  <div className={cx("text")}>
+                    <p>{post.textSnippet}</p>
+                  </div>
+                  <div className={cx("btns")}>
+                    <Button
+                      type="button"
+                      leftIcon={<FontAwesomeIcon icon={faPencilSquare} />}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      type="button"
+                      leftIcon={<FontAwesomeIcon icon={faTrash} />}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+          {data?.posts?.hasMore && (
+            <Button type="button" onClick={loadMorePosts}>
+              {loadingMore ? "Loading..." : "Load More"}
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );
@@ -34,6 +77,9 @@ export const getStaticProps = async () => {
 
   await apolloClient.query({
     query: PostsDocument,
+    variables: {
+      limit: 3,
+    },
   });
 
   return addApolloState(apolloClient, {
